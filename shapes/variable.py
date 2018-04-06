@@ -23,6 +23,12 @@ class Variable():
         result.X = self.X + other.X
         result.N = self.N
         return result
+    
+    def __sub__(self, other):
+        result = Variable([],[],[],[])
+        result.X = self.X - other.X
+        result.N = self.N
+        return result
         
     def __mul__(self, value): # FOR SCALARS ONLY
         result = Variable([],[],[],[])

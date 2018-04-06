@@ -21,24 +21,29 @@ class Solver():
         if frames == None:
             frames = self.frames
         
-        t = 0.0 + t_step
-        t_print = 0.0 + t_step
+        t = 0.0
+        t_print = 0.0
+ 
         
         while (t<=t_end):
             
             X = self.evolve(X, t_step)
             
-            if (t_print >= (t_end / frames) ):
+            if (t_print >= (t_end / float(frames)) ):
+                
+                #print(t_print,"/",(t_end / float(frames)))
+                
                 self.make_snapshot(X, output)
                 t_print = 0.0
                 
                 if (SILENT==False):
                     print(t,"/",t_end)
-                
-            t = t + t_step
-            t_print = t_print + t_step
-        
-        return X
+                   
+            t_print = t_print + t_step      
+            t = round(t + t_step , 7) # TODO, avoiding error!
+            
+            
+        return t_list #X
     
     def make_snapshot(self, X, output):
         output.append( X )       

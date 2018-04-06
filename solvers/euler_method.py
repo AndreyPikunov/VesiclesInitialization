@@ -1,5 +1,6 @@
 from python_packages.solvers.solver import *
 
+
 class EulerMethod(Solver):
     
     def __init__(self):
