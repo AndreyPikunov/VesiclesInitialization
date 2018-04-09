@@ -3,8 +3,8 @@ from python_packages.solvers.solver import *
 
 class EulerMethod(Solver):
     
-    def __init__(self):
-        Solver.__init__(self,name="EulerMethod")
+    def __init__(self, **kwargs):
+        super().__init__(name = "EulerMethod", **kwargs)
     
     def function(self, X):
         pass
