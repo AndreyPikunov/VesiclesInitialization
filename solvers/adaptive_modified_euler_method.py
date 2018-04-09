@@ -1,3 +1,8 @@
+# THIS IS REDUNDUNT CLASS
+# USE ModifiedEuler(ADAPTIVE = True)
+
+
+
 from python_packages.solvers.solver import *
 from python_packages.solvers.modified_euler_method import *
 
@@ -8,16 +13,8 @@ import numpy as np
 
 class AdaptiveModEulerMethod(ModEulerMethod):
     
-    def __init__(self):
-        Solver.__init__(self,name="AdaptiveModEulerMethod")
-        
-    def adapt(self, t_step, delta, params):
-        tol = params[0]
-        marg = params[1]
-        decr = params[2]
-        incr = params[3]
-        delta = delta + 0.0000000001 #to avoid division by 0
-        return float (t_step * marg * min( max(tol/delta, decr) , incr )  ) # FIX smtimes returns np.float64     
+    def __init__(self, **kwargs):
+        super().__init__(name = "AdaptiveModifiedEulerMethod", **kwargs) 
         
     def simulate(self, X, output, params = (1.0, 0.9, 0.3, 2.0), t_step = None, t_end = None, frames = None, SILENT = True):
         
