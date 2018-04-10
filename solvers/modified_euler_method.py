@@ -9,7 +9,11 @@ class ModEulerMethod(Solver):
     def function(self, X):
         pass
     
-    def evolve(self, X, t_step = None):
+    def evolve(self, X, walls = [], t_step = None):
         if t_step == None:
             t_step = self.t_step
-        return X + t_step * self.function( X + 0.5*t_step*self.function(X))
+            
+        #print(self.function(X , walls))
+            
+        arg1 = X + 0.5*t_step*self.function(X , walls)
+        return X + t_step * self.function( arg1 , walls)

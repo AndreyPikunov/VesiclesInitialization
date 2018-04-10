@@ -1,6 +1,7 @@
 from math import sqrt
 
 from python_packages.functions.geometry import * 
+from python_packages.shapes.line import * 
 
 
 ######_SPRING_FORSES_################
@@ -18,6 +19,24 @@ def fly(var, i, l0 = 0.66, kl = 0.3):
     f_after = -kl*(l_after - l0)/(l_after * l0**2) * (var.y(i) - var.y(i+1))
     f_before = -kl*(l_before - l0)/(l_before * l0**2) * (var.y(i) - var.y(i-1))
     return f_after + f_before
+
+# SPRING    ~~~~v~~~~~~~~~~~~~v~~~~~~~~~
+#        o      o      o      o      o
+#       ~^~~~~~~~~~~~~~^~~~~~~~~~~~~~^~
+def flx_2(var, i, l0 = 1.32, kl = 0.3):
+    l_after = length(var.x(i), var.y(i), var.x(i+2), var.y(i+2))
+    l_before = length(var.x(i), var.y(i), var.x(i-2), var.y(i-2))
+    f_after = -kl*(l_after - l0)/(l_after * l0**2) * (var.x(i) - var.x(i+2))
+    f_before = -kl*(l_before - l0)/(l_before * l0**2) * (var.x(i) - var.x(i-2))
+    return f_after + f_before
+
+def fly_2(var, i, l0 = 1.32, kl = 0.3):
+    l_after = length(var.x(i), var.y(i), var.x(i+2), var.y(i+2))
+    l_before = length(var.x(i), var.y(i), var.x(i-2), var.y(i-2))
+    f_after = -kl*(l_after - l0)/(l_after * l0**2) * (var.y(i) - var.y(i+2))
+    f_before = -kl*(l_before - l0)/(l_before * l0**2) * (var.y(i) - var.y(i-2))
+    return f_after + f_before
+
 
 ####_AREA_FORSES#####################
 
@@ -129,16 +148,58 @@ def fby(var, i, kb = 0.05, theta0 = 0.0):
     
     return kkb1*dcos1dy + kkb2*dcos2dy + kkb3*dcos3dy;
 
-def flx_2(var, i, l0 = 1.32, kl = 0.3):
-    l_after = length(var.x(i), var.y(i), var.x(i+2), var.y(i+2))
-    l_before = length(var.x(i), var.y(i), var.x(i-2), var.y(i-2))
-    f_after = -kl*(l_after - l0)/(l_after * l0**2) * (var.x(i) - var.x(i+2))
-    f_before = -kl*(l_before - l0)/(l_before * l0**2) * (var.x(i) - var.x(i-2))
-    return f_after + f_before
 
-def fly_2(var, i, l0 = 1.32, kl = 0.3):
-    l_after = length(var.x(i), var.y(i), var.x(i+2), var.y(i+2))
-    l_before = length(var.x(i), var.y(i), var.x(i-2), var.y(i-2))
-    f_after = -kl*(l_after - l0)/(l_after * l0**2) * (var.y(i) - var.y(i+2))
-    f_before = -kl*(l_before - l0)/(l_before * l0**2) * (var.y(i) - var.y(i-2))
-    return f_after + f_before
+########### OBSTACLES FORSES ####################
+
+#OBSTACLE = SEGMENT
+
+# Пока что ГИПЕРБОЛА!
+'''
+def f_repul_x(var, i, line, lr = 1.0, kr = 1.0):
+    lx, ly = vector_from_line_to_point(line.a, line.b, line.c, var.x(i), var.y(i))
+    norm = math.sqrt(lx**2 + ly**2)
+    return kr * lx/(abs(lx) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
+'''
+
+def f_repul_x(var, i, segm, lr = 1.0, kr = 1.0):
+    
+    if segm.is_point_on_segment(var.x(i), var.y(i))==True:
+        lx, ly = segm.vector_from_segment_to_point(var.x(i), var.y(i))
+        norm = math.sqrt(lx**2 + ly**2)
+        return kr * lx/(abs(lx) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
+    
+    else:
+        '''
+        if length(var.x(i), var.y(i), segm.point1[0], segm.point1[1])<lr:
+            (lx, ly) = (segm.point1[0] - var.x(i) , segm.point1[1] - var.y(i))
+            norm = math.sqrt(lx**2 + ly**2)
+            return kr * lx/(abs(lx) + 0.0000001) * max( lr/norm - 1, 0 )   # 0.0000001 to avoid div by 0
+        
+        if length(var.x(i), var.y(i), segm.point2[0], segm.point2[1])<lr:
+            (lx, ly) = (segm.point2[0] - var.x(i) , segm.point2[1] - var.y(i))
+            norm = math.sqrt(lx**2 + ly**2)
+            return kr * lx/(abs(lx) + 0.0000001) * max( lr/norm - 1, 0 )   # 0.0000001 to avoid div by 0
+        '''
+        return 0.0 # in any other cases
+    
+    
+def f_repul_y(var, i, segm, lr = 1.0, kr = 1.0):
+
+    if segm.is_point_on_segment(var.x(i), var.y(i))==True:
+        lx, ly = segm.vector_from_segment_to_point(var.x(i), var.y(i))
+        norm = math.sqrt(lx**2 + ly**2)
+        return kr * ly/(abs(ly) + 0.0000001) * max( lr/norm - 1, 0 )   # 0.0000001 to avoid div by 0
+    
+    else:
+        '''
+        if length(var.x(i), var.y(i), segm.point1[0], segm.point1[1])<lr:
+            (lx, ly) = (segm.point1[0] - var.x(i) , segm.point1[1] - var.y(i))
+            norm = math.sqrt(lx**2 + ly**2)
+            return kr * ly/(abs(ly) + 0.0000001) * max( lr/norm - 1, 0 )   # 0.0000001 to avoid div by 0
+        
+        if length(var.x(i), var.y(i), segm.point2[0], segm.point2[1])<lr:
+            (lx, ly) = (segm.point2[0] - var.x(i) , segm.point2[1] - var.y(i))
+            norm = math.sqrt(lx**2 + ly**2)
+            return kr * ly/(abs(ly) + 0.0000001) * max( lr/norm - 1, 0 )   # 0.0000001 to avoid div by 0
+        '''
+        return 0.0 # in any other cases

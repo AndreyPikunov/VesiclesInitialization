@@ -29,7 +29,7 @@ class Solver(): # TODO make it adaptive
         else:
             self.ADAPTIVE = False
              
-        self.parameters = [1.0, 0.9, 0.3, 2.0]
+        self.parameters = [0.01, 0.9, 0.3, 2.0]
         if kwargs.get("parameters") != None:
             self.parameters[0] = kwargs.get("parameters")[0] # tolerance
             self.parameters[1] = kwargs.get("parameters")[1] # margin
@@ -88,8 +88,14 @@ class Solver(): # TODO make it adaptive
             SILENT = kwargs.get("SILENT")
         else:
             SILENT = False
-        
-        
+                
+        ########## BOUNDARIES ####################
+        walls = []
+        if kwargs.get("walls") != None:
+            walls = kwargs.get("walls")
+            
+        print(walls.vertices_number-1, "walls initialized")
+            
         t = 0.0
         t_print = 0.0
         t_list = []
@@ -100,19 +106,17 @@ class Solver(): # TODO make it adaptive
             
             if ADAPTIVE == True:
                 
-                X1 = self.evolve(X, t_step)
-                X2 = self.evolve(self.evolve(X, 0.5*t_step), 0.5*t_step)
+                X1 = self.evolve(X, walls, t_step)
+                X2 = self.evolve(self.evolve(X, walls, 0.5*t_step), walls, 0.5*t_step)
 
                 delta = np.linalg.norm(X1 - X2) # [:] for instance of Variable class TODO!!!! FOR ANY VECTORS
 
                 t_step = self.adapt(t_step, delta, parameters)
             
-            X = self.evolve(X, t_step)
+            X = self.evolve(X, walls, t_step)
             
             if (t_print >= (t_end / float(frames)) ):
-                
-                #print(t_print,"/",(t_end / float(frames)))
-                
+              
                 self.make_snapshot(X, output)
                 t_print = 0.0
                 
