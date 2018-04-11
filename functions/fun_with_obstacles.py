@@ -1,5 +1,5 @@
 from python_packages.functions.forses import *
-from python_packages.shapes.line import *
+#from python_packages.shapes.line import *
 from python_packages.shapes.segment import *
 
 
@@ -17,8 +17,7 @@ def fun_with_obstacles(var, walls): # put Variable here
         F.X[i + F.N] = var.vy(i)
         
         
-        frx = 0.0
-        fry = 0.0       
+        (frx, fry) = (0.0, 0.0)        
         '''
         lr = 1.0
         kr = 1.0

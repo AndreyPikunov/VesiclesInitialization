@@ -36,10 +36,10 @@ class Segment:
         return vector_from_line_to_point(self.a, self.b, self.c, x, y)
     
     def vector_from_point1(self, x, y):
-        return vector_from_pnt1_to_pnt2(self.point1[0], x, self.point1[1], y)
+        return vector_from_pnt1_to_pnt2(self.point1[0], self.point1[1], x, y)
     
     def vector_from_point2(self, x, y):
-        return vector_from_pnt1_to_pnt2(self.point2[0], x, self.point2[1], y)
+        return vector_from_pnt1_to_pnt2(self.point2[0], self.point2[1], x, y)
     
     def point_on_segment(self, x, y):             
         return point_on_line(self.a, self.b, self.c, x, y)

@@ -41,10 +41,6 @@ class Solver(): # TODO make it adaptive
         else:
             self.function = None                                   
     
-    #def function(self, X): USELESS!!!
-        #pass
-    
-    
     def adapt(self, t_step, delta, params): # adapts time step 
         tol = params[0] # tolerance
         marg = params[1] # magrin from tolerance
@@ -100,7 +96,6 @@ class Solver(): # TODO make it adaptive
             return None, None # out, t_list
                 
         ########## BOUNDARIES ####################
-        #walls = []
         if kwargs.get("walls") != None:
             walls = kwargs.get("walls")
             

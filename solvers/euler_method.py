@@ -6,9 +6,6 @@ class EulerMethod(Solver):
     def __init__(self, **kwargs):
         super().__init__(name = "EulerMethod", **kwargs)
     
-    def function(self, X):
-        pass
-    
     def evolve(self, X, t_step = None):
         if t_step == None:
             t_step = self.t_step

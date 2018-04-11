@@ -144,3 +144,26 @@ def fr(var, i, segm, lr = 1.0, kr = 1.0):
     
     else:
         return 0.0, 0.0
+    
+############## POINT - TO - POINT FORCE #################    
+
+def fp(x1, y1, x2, y2, lr = 1.0, kr = 1.0):
+    
+    (lx, ly) = (None, None)
+    
+    vctr = vector_from_pnt1_to_pnt2( x2, y2, x1, y1)
+    if vector_length( vctr[0], vctr[1] ) < lr:  
+        lx, ly = vctr   
+    
+    if (lx, ly) != (None, None):        
+        norm = math.sqrt(lx**2 + ly**2)
+        
+        #print(vctr,lx,ly)
+        
+        fpx = kr * lx/(abs(lx) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
+        fpy = kr * ly/(abs(ly) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
+
+        return fpx, fpy   
+    
+    else:
+        return 0.0, 0.0

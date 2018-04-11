@@ -39,5 +39,5 @@ def vector_from_line_to_point(a, b, c, x0, y0):
     denom = math.sqrt(a**2 + b**2)
     return (a/denom)*(nom/denom), (b/denom)*(nom/denom)
     
-def vector_from_pnt1_to_pnt2(x1,x2, y1,y2):
+def vector_from_pnt1_to_pnt2(x1,y1, x2,y2):
     return x2-x1, y2-y1

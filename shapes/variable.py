@@ -1,16 +1,15 @@
-from numpy import array
-from numpy import append
+import numpy as np
 
 class Variable():
     
     def __init__(self, x_list, y_list, vx_list, vy_list):
         
-        self.N = len(x_list)
+        self.N = len(x_list) # TODO if 1 point
         
-        self.X = array(x_list, dtype=float)
-        self.X = append(self.X, y_list)
-        self.X = append(self.X, vx_list)
-        self.X = append(self.X, vy_list)             
+        self.X = np.array(x_list, dtype=float)
+        self.X = np.append(self.X, y_list)
+        self.X = np.append(self.X, vx_list)
+        self.X = np.append(self.X, vy_list)             
         
     def __len__(self):
         return len(self.X)
