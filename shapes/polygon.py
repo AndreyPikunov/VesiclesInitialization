@@ -9,18 +9,25 @@ class Polygon:
     def __init__(self, vertices): # vertices show go in a proper order
         
         self.vertices_number = len(vertices) + 1 # WE HAVE ONE DOUBLE NODE 
-        self.vertices = np.array(
-            [np.hstack((vertices[:,0], vertices[0,0])),\
-             np.hstack((vertices[:,1], vertices[0,1]))])
-        self.vertices = self.vertices.transpose()
-        
+        self.vertices = np.array( np.vstack((vertices, vertices[0,:])) )
+    
     
     def perimeter(self):
         return perimeter(self.vertices[:,0], self.vertices[:,1])
     
     def area(self):
         return area(self.vertices[:,0], self.vertices[:,1])
- 
+    
+    def centroid(self):
+        return centroid(self.vertices[0:-1, 0], self.vertices[0:-1, 1])
+                        
+    def resize(self, ratio):
+        xc, yc = self.centroid()
+        (vert_x, vert_y) = (self.vertices[:,0] - xc , self.vertices[:,1] - yc)
+        (vert_x, vert_y) = (vert_x*ratio, vert_y*ratio)
+        (vert_x, vert_y) = (vert_x + xc, vert_y + yc)
+        vertices_new = np.array([vert_x, vert_y]).transpose()    
+        return Polygon(vertices_new[:-1,:])      
 
     def make_nodes(self, nodes_number):
         

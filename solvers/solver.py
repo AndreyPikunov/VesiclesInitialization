@@ -36,10 +36,13 @@ class Solver(): # TODO make it adaptive
             self.parameters[2] = kwargs.get("parameters")[2] # decrement
             self.parameters[3] = kwargs.get("parameters")[3] # increment
         
-                                      
+        if kwargs.get("function") != None:
+            self.function = kwargs.get("function")
+        else:
+            self.function = None                                   
     
-    def function(self, X):
-        pass
+    #def function(self, X): USELESS!!!
+        #pass
     
     
     def adapt(self, t_step, delta, params): # adapts time step 
@@ -54,7 +57,7 @@ class Solver(): # TODO make it adaptive
     def evolve(self, X, t_step = None):
         pass
     
-    def simulate(self, X, output, **kwargs):
+    def simulate(self, X, **kwargs):
  
 
         if kwargs.get("t_step") != None:
@@ -88,9 +91,16 @@ class Solver(): # TODO make it adaptive
             SILENT = kwargs.get("SILENT")
         else:
             SILENT = False
+            
+        if kwargs.get("function") != None:
+            self.function = kwargs.get("function") # be careful, will rewrite self.function!!
+            
+        if self.function == None:
+            print("function is not given! \nuse Method.function = some_function \nEXIT")
+            return None, None # out, t_list
                 
         ########## BOUNDARIES ####################
-        walls = []
+        #walls = []
         if kwargs.get("walls") != None:
             walls = kwargs.get("walls")
             
@@ -99,6 +109,7 @@ class Solver(): # TODO make it adaptive
         t = 0.0
         t_print = 0.0
         t_list = []
+        output = [X]
         
         while (t<=t_end):
             
@@ -120,6 +131,9 @@ class Solver(): # TODO make it adaptive
                 self.make_snapshot(X, output)
                 t_print = 0.0
                 
+                if kwargs.get("output") != None:
+                    kwargs.get("output").append(X)
+                
                 if (SILENT==False):
                     print(t,"/",t_end)
                    
@@ -128,7 +142,7 @@ class Solver(): # TODO make it adaptive
             t_list.append(t_step)
             
             
-        return X, t_list
+        return output, t_list
 
     
     def make_snapshot(self, X, output):
@@ -141,7 +155,12 @@ class Solver(): # TODO make it adaptive
         s = s + self.name + "\n"
         s = s + "t_step = " + str(self.t_step) + "\n"
         s = s + "t_end = " + str(self.t_end) + "\n"
-        s = s + "frames = "+ str(self.frames)
+        s = s + "frames = " + str(self.frames) + "\n"
+        
+        if self.function != None:   
+            s = s + "function = " + str(self.function).split()[1]
+        else:
+            s = s + "function is not given"
         
         if self.ADAPTIVE == True:
             s = "Adaptive" + s + "\n"
