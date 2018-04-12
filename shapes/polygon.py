@@ -18,6 +18,10 @@ class Polygon:
     def area(self):
         return area(self.vertices[:,0], self.vertices[:,1])
     
+    def reduced_area(self):
+        area_max = (1 / (4 * math.pi)) * self.perimeter**2
+        return self.area() / area_max
+    
     def centroid(self):
         return centroid(self.vertices[0:-1, 0], self.vertices[0:-1, 1])
                         
@@ -27,8 +31,13 @@ class Polygon:
         (vert_x, vert_y) = (vert_x*ratio, vert_y*ratio)
         (vert_x, vert_y) = (vert_x + xc, vert_y + yc)
         vertices_new = np.array([vert_x, vert_y]).transpose()    
-        return Polygon(vertices_new[:-1,:])      
-
+        return Polygon(vertices_new[:-1,:])    
+    
+    ''' TODO
+    def margin(self, value):
+        pass
+    '''    
+        
     def make_nodes(self, nodes_number):
         
         l0 = self.perimeter() / nodes_number
@@ -76,10 +85,11 @@ class Polygon:
             
             i = i + 1
         
-        return Polygon(nodes)
+        return Polygon(nodes) # FIX BUG moves origin node by 1
+    
     
     def draw(self): 
         plt.axis('equal')
         plt.plot(self.vertices[:,0],self.vertices[:,1],'-ks')
-        plt.plot(self.vertices[0,0], self.vertices[0,1],'or')
+        plt.plot(self.vertices[0,0], self.vertices[0,1],'ow')
         #plt.show()

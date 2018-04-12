@@ -1,6 +1,7 @@
 import numpy as np
+from python_packages.tools.load_constants_from_file import *
 
-class Solver(): # TODO make it adaptive
+class Solver():
     
     def __init__(self, **kwargs):
         
@@ -52,14 +53,23 @@ class Solver(): # TODO make it adaptive
     
     def evolve(self, X, t_step = None):
         pass
+
+    
     
     def simulate(self, X, **kwargs):
- 
 
+        if kwargs.get("ADAPTIVE") == None:
+            ADAPTIVE = self.ADAPTIVE
+        else:
+            ADAPTIVE = kwargs.get("ADAPTIVE")           
+            
         if kwargs.get("t_step") != None:
             t_step = kwargs.get("t_step")
+            del kwargs["t_step"] # must be deleted for avoiding conflict of arguments in self.evolve() & self.adapt()
         else:
             t_step = self.t_step
+        
+        
         
         if kwargs.get("t_end") != None:
             t_end = kwargs.get("t_end")
@@ -71,10 +81,7 @@ class Solver(): # TODO make it adaptive
         else:
             frames = self.frames
             
-        if kwargs.get("ADAPTIVE") == None:
-            ADAPTIVE = self.ADAPTIVE
-        else:
-            ADAPTIVE = kwargs.get("ADAPTIVE")
+
                 
         parameters = self.parameters
         if kwargs.get("parameters") != None:
@@ -87,19 +94,36 @@ class Solver(): # TODO make it adaptive
             SILENT = kwargs.get("SILENT")
         else:
             SILENT = False
-            
+                    
         if kwargs.get("function") != None:
             self.function = kwargs.get("function") # be careful, will rewrite self.function!!
             
         if self.function == None:
-            print("function is not given! \nuse Method.function = some_function \nEXIT")
+            print("function is not given! "+"\n"+"use Method.function = some_function "+"\n"+"EXIT")
             return None, None # out, t_list
-                
-        ########## BOUNDARIES ####################
-        if kwargs.get("walls") != None:
-            walls = kwargs.get("walls")
+
+        
+        if kwargs.get("constants") == None:       
             
-        print(walls.vertices_number-1, "walls initialized")
+            if str(self.function).split()[1] == "fun_points_in_basket":
+                print("constants are not specified"+"\n"+"load from 'constants_for_fun_points_in_basket.txt'")
+                constants = load_constants_from_file("constants_for_fun_points_in_basket.txt")
+                kwargs["constants"] = constants # REWRITING
+                
+            elif str(self.function).split()[1] == "fun_with_obstacles":
+                print("constants are not specified"+"\n"+"load from 'constants_for_fun_with_obstacles.txt'")   
+                constants = load_constants_from_file("constants_for_fun_with_obstacles.txt")
+                kwargs["constants"] = constants # REWRITING
+                
+        if kwargs.get("constants") != None:
+            constants = kwargs.get("constants")
+            for key in sorted(list(constants.keys())):
+                print('{0:10}{1}'.format(key, constants[key]))
+
+            
+        if kwargs.get("walls") != None:
+            walls = kwargs.get("walls")            
+            print(walls.vertices_number-1, "walls initialized")
             
         t = 0.0
         t_print = 0.0
@@ -108,18 +132,19 @@ class Solver(): # TODO make it adaptive
         
         while (t<=t_end):
             
-            #print(t, t_end, t_step, parameters)
-            
             if ADAPTIVE == True:
                 
-                X1 = self.evolve(X, walls, t_step)
-                X2 = self.evolve(self.evolve(X, walls, 0.5*t_step), walls, 0.5*t_step)
+                X1 = self.evolve(X,
+                                 t_step, **kwargs)
+                
+                X2 = self.evolve(self.evolve(X, 0.5*t_step, **kwargs),
+                                 0.5*t_step, **kwargs)
 
                 delta = np.linalg.norm(X1 - X2) # [:] for instance of Variable class TODO!!!! FOR ANY VECTORS
 
                 t_step = self.adapt(t_step, delta, parameters)
             
-            X = self.evolve(X, walls, t_step)
+            X = self.evolve(X, t_step, **kwargs)
             
             if (t_print >= (t_end / float(frames)) ):
               
@@ -130,12 +155,11 @@ class Solver(): # TODO make it adaptive
                     kwargs.get("output").append(X)
                 
                 if (SILENT==False):
-                    print(t,"/",t_end)
+                    print("{0:.5f} / {1}".format(t,t_end))
                    
             t_print = t_print + t_step      
-            t = round(t + t_step , 7) # TODO, avoiding error! Could be a problem if t = 0.00000000xxxx -> 0.0
-            t_list.append(t_step)
-            
+            t = t + t_step #round(t + t_step , 7) # TODO, avoiding error! Could be a problem if t = 0.00000000xxxx -> 0.0
+            #t_list.append(t_step)           
             
         return output, t_list
 

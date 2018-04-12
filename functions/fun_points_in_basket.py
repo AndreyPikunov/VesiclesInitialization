@@ -1,12 +1,33 @@
 from python_packages.functions.forses import *
 from python_packages.shapes.segment import *
-from python_packages.shapes.variable import *
+from python_packages.tools.load_constants_from_file import *
 
-def fun_points_in_busket(var, walls):
+def fun_points_in_basket(var, **kwargs):
+    
+    if kwargs.get("walls") != None:
+        walls = kwargs.get("walls")
+    else:
+        print("walls are not given!"+"\n"+"EXIT")
+        return
+    
+    if kwargs.get("constants") == None:   
+        
+        constants = load_constants_from_file("constants_for_fun_points_in_basket.txt")
+        print("constants are not specified"+"\n"+"load from 'constants_for_fun_points_in_basket.txt'")
+        
+    else:
+        constants = kwargs.get("constants")
+
+        mass = constants['mass']
+        betta = constants['betta']
+
+        lr = constants['lr']
+        kr = constants['kr']
+
+        lp = constants['lp']
+        kp = constants['kp']
     
     F = var*0
-    mass = 1.0 # mass
-    betta = 0.1 # friction coefficient    1.0
     
     for i in range(F.N):
         
@@ -20,18 +41,21 @@ def fun_points_in_busket(var, walls):
         lr = 1.0
         kr = 1.0
         '''  
+        
+        ########     W A L L S ###########################
         for j in range(walls.vertices_number-1):
             segment_current = Segment(walls.vertices[j], walls.vertices[j+1])
-            frx_, fry_ = fr(var, i, segment_current, lr = 5.0, kr = 1.0)
+            frx_, fry_ = fr(var, i, segment_current, lr, kr)
             frx = frx + frx_
             fry = fry + fry_   
 
+        ########     B O D Y - B O D Y ###################
         (fpx, fpy) = (0.0, 0.0)
         for j in range(F.N):
             if i!=j:
                 fpx_, fpy_ = fp(var.x(i), var.y(i),
                                 var.x(j), var.y(j),
-                                lr = 3.0, kr = 1.0)
+                                lp, kp)
                 fpx = fpx + fpx_
                 fpy = fpy + fpy_      
         
@@ -42,7 +66,5 @@ def fun_points_in_busket(var, walls):
         
         # y - velocity
         F.X[i + 3*F.N] = (1/mass)*force_y - betta*var.vy(i)
-        
-        #print(F[:])
         
     return F

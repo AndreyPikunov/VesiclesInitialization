@@ -43,7 +43,7 @@ def fly_2(var, i, l0 = 1.32, kl = 0.3):
 
 ####_AREA_FORSES#####################
 
-def fs(var, i, ks = 200.0, s0 = 314.0):
+def fs(var, i, ks = 2000.0, s0 = 314.0):
     s = area(var.x(), var.y()) 
     fsx = -0.5*ks*(s - s0)/(s0**2) * (var.y(i-1) - var.y(i+1))
     fsy = -0.5*ks*(s - s0)/(s0**2) * (var.x(i+1) - var.x(i-1))
@@ -107,7 +107,7 @@ def fb(var, i, kb = 0.05, theta0 = 0.0):
 
 #OBSTACLE = SEGMENT
 
-# Пока что ГИПЕРБОЛА!
+# POTENTIAL LOOKS LIKE HIPERBOLA + STEP 
 
 def fr(var, i, segm, lr = 1.0, kr = 1.0):
     
@@ -137,8 +137,8 @@ def fr(var, i, segm, lr = 1.0, kr = 1.0):
     if (lx, ly) != (None, None):        
         norm = math.sqrt(lx**2 + ly**2)
         
-        frx = kr * lx/(abs(lx) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
-        fry = kr * ly/(abs(ly) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
+        frx = kr * lx/(abs(lx) + 0.0000001) * max( lr/norm   , 1 ) # 0.0000001 to avoid div by 0
+        fry = kr * ly/(abs(ly) + 0.0000001) * max( lr/norm   , 1 ) # 0.0000001 to avoid div by 0
         
         return frx, fry
     
@@ -158,10 +158,8 @@ def fp(x1, y1, x2, y2, lr = 1.0, kr = 1.0):
     if (lx, ly) != (None, None):        
         norm = math.sqrt(lx**2 + ly**2)
         
-        #print(vctr,lx,ly)
-        
-        fpx = kr * lx/(abs(lx) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
-        fpy = kr * ly/(abs(ly) + 0.0000001) * max( lr/norm  - 1 , 0 ) # 0.0000001 to avoid div by 0
+        fpx = kr * lx/(abs(lx) + 0.0000001) * max( lr/norm   , 1 ) # 0.0000001 to avoid div by 0
+        fpy = kr * ly/(abs(ly) + 0.0000001) * max( lr/norm   , 1 ) # 0.0000001 to avoid div by 0
 
         return fpx, fpy   
     

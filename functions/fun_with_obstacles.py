@@ -1,13 +1,39 @@
 from python_packages.functions.forses import *
-#from python_packages.shapes.line import *
 from python_packages.shapes.segment import *
+from python_packages.tools.load_constants_from_file import *
 
-
-def fun_with_obstacles(var, walls): # put Variable here
+def fun_with_obstacles(var, **kwargs):
     
+    if kwargs.get("walls") != None:
+        walls = kwargs.get("walls")
+    else:
+        print("walls are not given!"+"\n"+"EXIT")
+        return
+
+    if kwargs.get("constants") == None:   
+        
+        constants = load_constants_from_file("constants_for_fun_with_obstacles.txt")
+        print("constants are not specified"+"\n"+"load from 'constants_for_fun_with_obstacles.txt'")
+        
+    else:
+        constants = kwargs.get("constants")
+        
+        mass = constants['mass']
+        betta = constants['betta']
+
+        lr = constants['lr']
+        kr = constants['kr']
+        
+        kl = constants['kl']
+        l0 = constants['l0']
+        
+        ks = constants['ks']
+        s0 = constants['s0']
+        
+        kb = constants['kb']
+    
+        
     F = var*0
-    mass = 10.0 # mass
-    betta = 1.0 # friction coefficient    1.0
     
     for i in range(F.N):
         
@@ -24,8 +50,7 @@ def fun_with_obstacles(var, walls): # put Variable here
         '''  
         for j in range(walls.vertices_number-1):
             segment_current = Segment(walls.vertices[j], walls.vertices[j+1])
-            #print(fr(var, i, segment_current, lr = 1.0, kr = 1.0))
-            frx_, fry_ = fr(var, i, segment_current, lr = 1.0, kr = 1.0)
+            frx_, fry_ = fr(var, i, segment_current, lr, kr)
             frx = frx + frx_
             fry = fry + fry_      
         '''
@@ -33,9 +58,9 @@ def fun_with_obstacles(var, walls): # put Variable here
         s0 = 314.0   ks = 2000.0
         kb = 0.05 
         '''        
-        flx, fly = fl(var, i, l0=0.66, kl = 3.0)
-        fsx, fsy = fs(var, i, s0=314.0, ks = 200.0)
-        fbx, fby = fb(var, i, kb=5.0)
+        flx, fly = fl(var, i, l0, kl)
+        fsx, fsy = fs(var, i, s0, ks)
+        fbx, fby = fb(var, i, kb)
         
         (force_x, force_y) = (flx + fsx + fbx + frx , fly + fsy + fby + fry)
                       
