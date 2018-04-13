@@ -1,0 +1,29 @@
+There are some packages for preprocessing LBM simulations with RBC
+
+supplementary directory contains missing files for constants
+
+
+vesinit/
+    functions/
+        __init__.py
+        forses.py
+        fun_points_in_basket.py
+        fun_with_obstacles.py
+        geometry.py
+    shapes/
+        __init__.py
+        line.py
+        polygon.py
+        segment.py
+        tree1D.py
+        tree2D.py
+        variable.py
+    solvers/
+        __init__.py
+        euler_method.py
+        modified_euler_method.py
+        sovler.py
+    tools/
+        __init__.py
+        insert_vesicles_hor_vert.py
+        load_constants_from_file.py
