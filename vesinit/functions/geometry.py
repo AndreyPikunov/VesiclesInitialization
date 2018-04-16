@@ -7,10 +7,10 @@ def length(x1,y1,x2,y2):
 def vector_length(x,y):
     return length(x, y, 0.0, 0.0)
     
-def area(x,y):
+def area(x,y): # CAN BE NEGATIVE, IMPORTANT!
     x = np.array(x)
     y = np.array(y)
-    return 0.5*np.abs(np.dot(x,np.roll(y,1))-np.dot(y,np.roll(x,1)))
+    return 0.5*(np.dot(y,np.roll(x,1))-np.dot(x,np.roll(y,1)))
 
 def perimeter(x,y):
     per = 0.0
@@ -27,11 +27,9 @@ def perpendicular_distance(a, b, c, x0, y0): # distance from point (x0, y0) to a
     return nominator/denominator
     
 def point_on_line(a, b, c, x0, y0): #projection of point on line ax + by + c = 0
-    
-    ######## FIX BUG : works only with normalized line equation correctly ########## TODO!!!
     nominator1 = b*(b*x0 - a*y0) - a*c
     nominator2 = a*(-b*x0 + a*y0) - b*c
-    denominator = math.sqrt(a**2 + b**2)
+    denominator = a**2 + b**2
     return nominator1/denominator, nominator2/denominator # x and y
 
 def vector_from_line_to_point(a, b, c, x0, y0): # line ax + by + c = 0

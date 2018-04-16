@@ -8,13 +8,13 @@ def fun_points_in_basket(var, walls = None, constants = None, **kwargs):
     Massive points flying in a space with an obstacle.
 
     Points interact between each other with point-to-point force (fp)
-    and with obstacle with repulsive force (fr).
+    and with obstacle with repulsive-attractive force (fr_attraction).
 
     Parameters
     ----------
     var : `Variable`
         Initial x, y coordinates and vx, vy velocities of points.
-    walls : `Polygon`, `optional`
+    walls : list of `Polygon`, `optional`
         Obstacle. Default = None (free space).
     constants: `dict`, `optional`
         Constants for fp and fr.
@@ -59,13 +59,13 @@ def fun_points_in_basket(var, walls = None, constants = None, **kwargs):
         ########     W A L L S ###########################
         (frx, fry) = (0.0, 0.0)
         
-        if walls != None:
-            
-            for j in range(walls.vertices_number-1):
-                segment_current = shapes.Segment(walls.vertices[j], walls.vertices[j+1])
-                frx_, fry_ = forces.fr(var, i, segment_current, lr, kr)
-                frx = frx + frx_
-                fry = fry + fry_   
+        if len(walls) != 0:
+            for wall in walls:
+                for j in range(wall.vertices_number-1):
+                    segment_current = shapes.Segment(wall.vertices[j], wall.vertices[j+1])
+                    frx_, fry_ = forces.fr_attraction(var, i, segment_current, lr, kr) # no modulus for even distribition
+                    frx = frx + frx_
+                    fry = fry + fry_   
 
         ########     B O D Y - B O D Y ###################
         (fpx, fpy) = (0.0, 0.0)

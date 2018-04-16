@@ -73,8 +73,10 @@ class Solver():
         marg = params[1] # magrin from tolerance
         decr = params[2] # maximal decrement
         incr = params[3] # maximum increment
-        delta = delta + 0.0000000001 #to avoid division by 0
-        return t_step * marg * min( max(tol/delta, decr) , incr )    
+        if delta != 0:
+            return t_step * marg * min( max(tol/delta, decr) , incr )
+        else
+            return t_step * marg * incr
 
     
     def evolve(self, X, t_step = None):
@@ -138,9 +140,7 @@ class Solver():
             
         if self.function == None:
             print("function is not given! "+"\n"+"use Method.function = some_function "+"\n"+"EXIT")
-            return None, None # out, t_list
-
-        
+            return None  
         
         ######### F O R    F U N C T I O N S ##################################################################
         if kwargs.get("constants") == None:       
@@ -162,7 +162,9 @@ class Solver():
             
         if kwargs.get("walls") != None:
             walls = kwargs.get("walls")            
-            print(walls.vertices_number-1, "walls initialized")
+            print(len(walls), "obstacles initialized")
+        else:
+            print("obstacles are not given - free space")
             
         ########################################################################################################
             
@@ -172,7 +174,7 @@ class Solver():
         t_print = 0.0 # Time to catch snapshot
         
         if output == None:
-            output = [X]
+            output = [X] # initial state
         
         while (t<=t_end):
             
@@ -184,14 +186,14 @@ class Solver():
                 X2 = self.evolve(self.evolve(X, 0.5*t_step, **kwargs),
                                  0.5*t_step, **kwargs)
 
-                delta = float(np.linalg.norm(X1[:] - X2[:])) # [:] for instance of Variable class TODO!!!! FOR ANY VECTORS
-                       #float from np.float64
+                delta = float(np.linalg.norm(X1[:] - X2[:])) # [:] for instance of Variable class.
+                       #float from np.float64                # TODO!!!! FOR ANY VECTORS   
 
                 t_step = self.adapt(t_step, delta, parameters)
             
             X = self.evolve(X, t_step, **kwargs)
             
-            if (t_print >= (t_end / frames) ):
+            if (t_print + t_step >= (t_end / frames) ):
               
                 self.make_snapshot(X, output)
                 t_print = 0.0
@@ -200,11 +202,10 @@ class Solver():
                     print("{0:.5f} / {1}".format(t,t_end))
                    
             t_print = t_print + t_step      
-            t = t + t_step #round(t + t_step , 7) # TODO, avoiding error! Could be a problem if t = 0.00000000xxxx -> 0.0
+            t = t + t_step
             
             if t_step_list!=None:       
-                t_step_list.append(t_step)    
-                
+                t_step_list.append(t_step)              
             
         return output
 

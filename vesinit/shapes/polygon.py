@@ -11,7 +11,6 @@ class Polygon:
         self.vertices_number = len(vertices) + 1 # WE HAVE ONE DOUBLE NODE 
         self.vertices = np.array( np.vstack((vertices, vertices[0,:])) )
     
-    
     def perimeter(self):
         return functions.geometry.perimeter(self.vertices[:,0], self.vertices[:,1])
     

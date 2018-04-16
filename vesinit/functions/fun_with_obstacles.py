@@ -3,7 +3,7 @@ from .. import shapes
 from .. import tools
 
 
-def fun_with_obstacles(var, walls, constants = None, **kwargs):
+def fun_with_obstacles(var, walls = None, constants = None, **kwargs):
     """
     Vesicle in a space with an obstacle.
 
@@ -14,7 +14,7 @@ def fun_with_obstacles(var, walls, constants = None, **kwargs):
     ----------
     var : `Variable`
         Initial x, y coordinates and vx, vy velocities of nodes.
-    walls : `Polygon`, `optional`
+    walls : list of `Polygon`, `optional`
         Obstacle. Default = None (free space).
     constants: `dict`, `optional`
         Constants for fp and fr.
@@ -64,12 +64,13 @@ def fun_with_obstacles(var, walls, constants = None, **kwargs):
         ##########   W A L L S #############################
         (frx, fry) = (0.0, 0.0)     
         
-        if walls != None:
-            for j in range(walls.vertices_number-1):
-                segment_current = shapes.Segment(walls.vertices[j], walls.vertices[j+1])
-                frx_, fry_ = forces.fr(var, i, segment_current, lr, kr)
-                frx = frx + frx_
-                fry = fry + fry_      
+        if len(walls) != 0:
+            for wall in walls:
+                for j in range(wall.vertices_number-1):
+                    segment_current = shapes.Segment(wall.vertices[j], wall.vertices[j+1])
+                    frx_, fry_ = forces.fr(var, i, segment_current, lr, kr)
+                    frx = frx + frx_
+                    fry = fry + fry_
 
             
         ########## STRETCHING, SWELLING, BENDING ###########
