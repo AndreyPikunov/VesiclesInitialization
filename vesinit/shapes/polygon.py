@@ -9,7 +9,7 @@ class Polygon:
     def __init__(self, vertices): # vertices show go in a proper order
         
         self.vertices_number = len(vertices) + 1 # WE HAVE ONE DOUBLE NODE 
-        self.vertices = np.array( np.vstack((vertices, vertices[0,:])) )
+        self.vertices = np.array( np.vstack((vertices, vertices[0,:])), dtype = float ) # float help to margin
     
     def perimeter(self):
         return functions.geometry.perimeter(self.vertices[:,0], self.vertices[:,1])
@@ -32,10 +32,22 @@ class Polygon:
         vertices_new = np.array([vert_x, vert_y]).transpose()    
         return Polygon(vertices_new[:-1,:])    
     
-    ''' TODO
+    #TODO: fix bug, BISSECTRICE!!
     def margin(self, value):
-        pass
-    '''    
+        (vert_x, vert_y) = (np.array(self.vertices[:-1,0]) , np.array(self.vertices[:-1,1]))
+        N = self.vertices_number
+        S = self.area()
+        print("S = ",S)
+        for i in range(N-1):
+            dsdx_i = (self.vertices[(i+1)%(N-1) , 1] - self.vertices[(i-1)%(N-1) , 1])
+            dsdy_i = (self.vertices[(i-1)%(N-1) , 0] - self.vertices[(i+1)%(N-1) , 0])
+            print("dx,dy = ",dsdx_i, dsdy_i)
+            norma = math.sqrt(dsdx_i**2 + dsdy_i**2)
+            vert_x[i] = (self.vertices[i,0] + value * (dsdx_i/norma) * np.sign(S))
+            vert_y[i] = (self.vertices[i,1] + value * (dsdy_i/norma) * np.sign(S))
+            print("vx,vy = ",vert_x[i], vert_y[i])
+        return Polygon(np.vstack((vert_x,vert_y)).transpose())
+      
         
     def make_nodes(self, nodes_number):
         

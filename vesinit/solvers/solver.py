@@ -75,7 +75,7 @@ class Solver():
         incr = params[3] # maximum increment
         if delta != 0:
             return t_step * marg * min( max(tol/delta, decr) , incr )
-        else
+        else:
             return t_step * marg * incr
 
     
