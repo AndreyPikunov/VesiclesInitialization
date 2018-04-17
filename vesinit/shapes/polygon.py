@@ -18,7 +18,7 @@ class Polygon:
         return functions.geometry.area(self.vertices[:,0], self.vertices[:,1])
     
     def reduced_area(self):
-        area_max = (1 / (4 * math.pi)) * self.perimeter**2
+        area_max = (1 / (4 * math.pi)) * self.perimeter()**2
         return self.area() / area_max
     
     def centroid(self):

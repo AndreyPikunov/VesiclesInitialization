@@ -160,11 +160,10 @@ class Solver():
             for key in sorted(list(constants.keys())):
                 print('{0:10}{1}'.format(key, constants[key]))
             
-        if kwargs.get("walls") != None:
-            walls = kwargs.get("walls")            
-            print(len(walls), "obstacles initialized")
+        if (kwargs.get("walls") != None) and (len(kwargs.get("walls"))!=0):          
+            print(len(kwargs.get("walls")), "obstacles initialized")
         else:
-            print("obstacles are not given - free space")
+            print("0 obstacles initialized - free space")
             
         ########################################################################################################
             
