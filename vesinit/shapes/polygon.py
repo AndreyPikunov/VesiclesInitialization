@@ -52,6 +52,7 @@ class Polygon:
     def make_nodes(self, nodes_number):
         
         l0 = self.perimeter() / nodes_number
+        l0 = math.floor(l0 * 1e+10) / 1e+10 # avoiding error of float representaion
         
         nodes = np.empty((0,2))
         
@@ -101,6 +102,6 @@ class Polygon:
     
     def draw(self): 
         plt.axis('equal')
-        plt.plot(self.vertices[:,0],self.vertices[:,1],'-ks')
-        plt.plot(self.vertices[0,0], self.vertices[0,1],'ow')
+        plt.plot(self.vertices[0,0], self.vertices[0,1],'oy')
+        plt.plot(self.vertices[:,0],self.vertices[:,1],'-k.')
         #plt.show()
