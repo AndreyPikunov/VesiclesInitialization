@@ -1,9 +1,8 @@
-### O L D ###
-
 import numpy as np
-
 import matplotlib.pyplot as plt
+import math
 
+from .. import functions
 
 
 def load_initial_shape(file_name = 'initial_vesicle_shape.txt'):
@@ -17,6 +16,7 @@ def load_initial_shape(file_name = 'initial_vesicle_shape.txt'):
     sh_y = sh[:,1]
 
     return (sh_x, sh_y)
+
 
 def draw_initial_shape(sh_x, sh_y):
     fig = plt.figure()
@@ -32,18 +32,21 @@ def hematocrit(A, sx, sy):
     
     total_rbc_area = 0
     for i in range(len(sx)):
-        total_rbc_area = total_rbc_area + polygon_area(sx[i,:], sy[i,:])
+        total_rbc_area = total_rbc_area + functions.geometry.area(sx[i,:], sy[i,:])
     
-    return round( total_rbc_area/vessel_area(A) , 2) * 100
-
+    return abs(round( total_rbc_area/vessel_area(A) , 2) * 100)
 
 
 def get_rbc_size(sh_x, sh_y):
-    w = abs(np.min(sh_x) - np.max(sh_x))
-    h = abs(np.min(sh_y) - np.max(sh_y))
-    w = int(w)+1 #safety
-    h = int(h)+1
+    
+    w = np.ptp(sh_x)
+    h = np.ptp(sh_y)
+    
+    w = math.ceil(w) + 1 # maybe + 1 safety?
+    h = math.ceil(h) + 1
+    
     return (w,h)
+
 
 def load_mask(file_name):
     return np.loadtxt(file_name)
@@ -56,8 +59,8 @@ def insert_vesicles(sh_x, sh_y, mask = np.full((100,100), True), VERT = True):
    
     (w, h) = get_rbc_size(sh_x, sh_y)
     
-    b = np.array(mask)
-    l = [] # list of centroids
+    b = np.array(mask, dtype = bool)
+    l = [] # [ X_coordinate, Y_coordinate, Inclination ]
     
     inclination = 0.0
     
@@ -74,21 +77,23 @@ def insert_vesicles(sh_x, sh_y, mask = np.full((100,100), True), VERT = True):
     return (l, b)
 
 
-def insert_vesicles_max(sh_x, sh_y, mask = np.full((100,100), True)): # inserts maximum number of vesicles possible - vert and horiz
+def insert_vesicles_max(sh_x, sh_y, mask = np.full((100,100), True)):
+    '''inserts maximum number of vesicles possible - vert then horiz'''
+    
     (l, b) = insert_vesicles(sh_x, sh_y, mask)
     (l_, b) = insert_vesicles(sh_x, sh_y, b, False)
     return (l+l_, b)
 
 
-def draw_scene(mask, sh_x, sh_y):
+def draw_scene(mask, sx, sy):
     
-    fig = plt.figure#(figsize=(18,12))
+    fig = plt.figure()#(figsize=(18,12))
     draw_mask(mask)
-    plt.plot(sx,sy,'.r')
+    plt.plot(sx.transpose(),sy.transpose())
     plt.show()
     
-    print('Number of vesicles = ', len(sh_x))
-    print('Hematocrit = ', hematocrit(mask, sh_x, sh_y))
+    print('Number of vesicles = ', len(sx))
+    print('Hematocrit = ', hematocrit(mask, sx, sy))
 
 
 def create_shapes(l, sh_x, sh_y):
@@ -110,6 +115,7 @@ def create_shapes(l, sh_x, sh_y):
 
 
 def save_coordinates(file_name, l):
+    
     f = open(file_name+'.txt', 'w')
 
     for i in range(len(l)):

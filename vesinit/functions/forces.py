@@ -22,10 +22,11 @@ def fl(var, i, l0 = 0.66, kl = 0.3):
     return flx, fly
 
 
-def fs(var, i, s0 = 314.0, ks = 2000.0):
-    """swelling force"""
-    
+def fs(var, i, s, s0 = 314.0, ks = 2000.0):
+    """swelling force
     s = geometry.area(var.x(), var.y()) 
+    """
+    
     fsx = -0.5*ks*(abs(s) - s0)/(s0**2) * (var.y(i+1) - var.y(i-1)) * np.sign(s)
     fsy = -0.5*ks*(abs(s) - s0)/(s0**2) * (var.x(i-1) - var.x(i+1)) * np.sign(s)
     return fsx, fsy
@@ -98,6 +99,7 @@ def fr(var, i, segm, lr = 1.0, kr = 1.0):
        geometry.vector_length( vctr[0], vctr[1] ) < lr:
         lx, ly = vctr
     
+    """
     if segm.is_point_on_segment(var.x(i), var.y(i))==False:
         
         vctr1 = segm.vector_from_point1(var.x(i), var.y(i)) 
@@ -110,7 +112,7 @@ def fr(var, i, segm, lr = 1.0, kr = 1.0):
 
         if geometry.vector_length( vctr[0], vctr[1] ) < lr:
             lx, ly = vctr    
-    
+    """
     if (lx, ly) != (None, None):        
         norm = math.sqrt(lx**2 + ly**2)
         
@@ -167,13 +169,14 @@ def fp(x1, y1, x2, y2, lp = 1.0, kp = 1.0):
     if geometry.vector_length( vctr[0], vctr[1] ) < lp:  
         lx, ly = vctr   
     
-    if (lx, ly) != (None, None):        
-        norm = math.sqrt(lx**2 + ly**2)
-        
-        fpx = kp * np.sign(lx) * (lp/norm)
-        fpy = kp * np.sign(ly) * (lp/norm)
-
-        return fpx, fpy   
+    if (lx, ly) != (None, None):            #     ^ \
+                                            #     | \
+        norm = math.sqrt(lx**2 + ly**2)     #     |  \
+                                            #     |   `-|
+        fpx = kp * np.sign(lx) * (lp/norm)  #     |_____l__________  >
+        fpy = kp * np.sign(ly) * (lp/norm)  #     |
+                                                 
+        return fpx, fpy                     
     
     else:
         return 0.0, 0.0

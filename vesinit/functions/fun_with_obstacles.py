@@ -1,4 +1,5 @@
 from . import forces
+from . import geometry
 from .. import shapes
 from .. import tools
 
@@ -53,6 +54,8 @@ def fun_with_obstacles(var, walls = None, constants = None, **kwargs):
         
     F = var*0
     
+    s = geometry.area(var.x(), var.y()) # for swelling force 
+    
     for i in range(F.N):
         
         # x - coordinate
@@ -75,7 +78,7 @@ def fun_with_obstacles(var, walls = None, constants = None, **kwargs):
             
         ########## STRETCHING, SWELLING, BENDING ###########
         flx, fly = forces.fl(var, i, l0, kl)
-        fsx, fsy = forces.fs(var, i, s0, ks)
+        fsx, fsy = forces.fs(var, i, s, s0, ks)
         fbx, fby = forces.fb(var, i, kb)
         
         (force_x, force_y) = (flx + fsx + fbx + frx , fly + fsy + fby + fry)

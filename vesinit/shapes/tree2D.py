@@ -30,7 +30,7 @@ class Tree2D(Tree1D):
 
     
     def radius(self, i): # r_cap - radius of the smallest cappilar
-        if (i==self.depth+1):
+        if (i>=self.depth+1):
             return self.r_cap
         else:
             return int(round(((2**(self.a))*self.radius(i+1))))
