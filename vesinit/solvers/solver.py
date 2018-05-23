@@ -118,7 +118,6 @@ class Solver():
             Frames of X (variable of interest).
 
         """
-        
             
         if t_step == None:
             t_step = self.t_step             
@@ -145,12 +144,12 @@ class Solver():
         ######### F O R    F U N C T I O N S ##################################################################
         if kwargs.get("constants") == None:       
             
-            if str(self.function).split()[1] == "fun_points_in_basket":
+            if self.function.__name__ == "fun_points_in_basket":
                 print("constants are not specified"+"\n"+"load from 'constants_for_fun_points_in_basket.txt'")
                 constants = tools.load_constants_from_file("constants_for_fun_points_in_basket.txt")
                 kwargs["constants"] = constants # REWRITING
                 
-            elif str(self.function).split()[1] == "fun_with_obstacles":
+            elif self.function.__name__ == "fun_with_obstacles":
                 print("constants are not specified"+"\n"+"load from 'constants_for_fun_with_obstacles.txt'")   
                 constants = tools.load_constants_from_file("constants_for_fun_with_obstacles.txt")
                 kwargs["constants"] = constants # REWRITING

@@ -5,6 +5,28 @@ import matplotlib.pyplot as plt
 class Tree1D:
      
     def __init__(self, depth = 4, l_1 = 300, b = 0.2, phi_1 = 1.0, c = 0.66, CROP = True):
+        """
+        Parameters
+        ----------
+        l_1 : float, optional.
+            Feeding artery length.
+            Default = 300.
+        b : float, optional.
+            Rate of lenght decrease.
+            l(i)^(1/b) = 2*l(i+1)^(1/b).
+            Default = 0.2.
+        phi_1 : float, optional.
+            Angle of the first bifurcation.
+            Default = 1.0 = pi/3.
+        c : float, optional.
+            Rate of angle decrease.
+            phi(i) = c*phi(i+1).
+            Default = 0.66 = 2/3.
+        CROP : bool, optional.
+            Cropping for future creation of Tree2D.
+            Will make feeding artery and last generation 2 times smaller.
+            Default = True.
+        """
         
         self.depth = depth
         
@@ -20,7 +42,6 @@ class Tree1D:
         self.CROP = CROP
         
         
-        
         (self.x[0], self.y[0]) = (0, 0) # feeding point
 
         (self.x[1], self.y[1]) = (self.x[0] + self.length(1), self.y[0])
@@ -31,14 +52,16 @@ class Tree1D:
                 n_n = self.node_number(i,j)
                 p_n = self.parent_number(i,j)
                 
-                self.x[n_n] = self.x[p_n] + round(self.length(i) * math.cos(self.phi(i)))
-                self.y[n_n] = self.y[p_n] + round((2*(0.5 - j%2)) * self.length(i) * math.sin(self.phi(i))) # 2*(j%2-0.5) - child up or down 
+                self.x[n_n] = self.x[p_n] + \
+                round(self.length(i) * math.cos(self.phi(i)))
+                
+                self.y[n_n] = self.y[p_n] + \
+                round((2*(0.5 - j%2)) * self.length(i) * math.sin(self.phi(i))) # 2*(j%2-0.5) - child up or down 
 
-        # cropping tree for future miraging
-
+        ############## cropping tree for future reflecting #####################
         if CROP:
-
-            self.x = self.x - self.length(1)/2 # avoiding twofold length of artery and vein BY combining them
+            
+            self.x = self.x - self.length(1)/2 # avoiding twofold length of artery and vein by combining them
             (self.x[0], self.y[0]) = (0, 0) # return feeding point
 
             i = self.depth
@@ -47,36 +70,40 @@ class Tree1D:
                 n_n = self.node_number(i,j)
                 p_n = self.parent_number(i,j)
                 
-                self.x[n_n] = self.x[p_n] + round(self.length(i) * math.cos(self.phi(i))/2)
-                self.y[n_n] = self.y[p_n] + round((2*(0.5 - j%2)) * self.length(i) * math.sin(self.phi(i))/2) # 2*(j%2-0.5) - child up or down 
+                self.x[n_n] = self.x[p_n] + \
+                round(self.length(i) * math.cos(self.phi(i))/2)
+                
+                self.y[n_n] = self.y[p_n] + \
+                round((2*(0.5 - j%2)) * self.length(i) * math.sin(self.phi(i))/2) # 2*(j%2-0.5) - child up or down 
 
             self.y = self.y + abs( self.y[ self.node_number(self.depth,1) ]  ) + 30 # +30 for safety
 
             self.x = self.x.astype(int)
             self.y = self.y.astype(int)
-
-        #print("Hey, I'm the Tree!!1")
-
-
         
         
-    def node_number(self, i,j): # i - depth level, j - number of the node of the i-th level
+    def node_number(self, i,j):
+        """i - depth level,
+        j - number of the node of the i-th level"""
         return int(2**(i-1)+(j-1))
 
     
     def parent_number(self, i,j): 
+        """i - depth level,
+        j - number of the node of the i-th level"""
         return int(self.node_number( (i-1), math.ceil(j/2) ))
 
     
-    def length(self, i): # length of vessel of the i-th generation
+    def length(self, i):
+        """length of vessel of the i-th generation"""
         if (i==1):
             return self.l_1
         else:
             return (2**(-self.b))*self.length(i-1)
         
         
-    def phi(self, i): # angle of branching of the i-th generetion
-        
+    def phi(self, i):
+        """angle of branching of the i-th generetion"""
         if (i==1):
             return self.phi_1
         else:

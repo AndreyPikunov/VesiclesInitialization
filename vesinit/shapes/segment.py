@@ -28,7 +28,9 @@ class Segment:
         self.c = self.c / norma
             
         
-    def is_contain(self, x, y): # USE ONLY FOR POINTS ON (INSIDE) THE LINE ax+by+c=0 !!!  o------x--------------o
+    def is_contain(self, x, y):
+        """USE ONLY FOR POINTS ON (INSIDE) THE LINE ax+by+c=0 !!!
+        o------x--------------o"""
         return (self.point1[0] - x) * (self.point2[0] - x) + (self.point1[1] - y) * (self.point2[1] - y) <= 0
     
     def vector_from_segment_to_point(self, x, y):     

@@ -41,13 +41,15 @@ class Variable():
         result.N = self.N
         return result
         
-    def __mul__(self, value): # FOR SCALARS ONLY
+    def __mul__(self, value):
+        """FOR SCALARS ONLY"""
         result = Variable([],[],[],[])
         result.X = self.X * value
         result.N = self.N
         return result
     
-    def __rmul__(self, value): # FOR SCALARS ONLY
+    def __rmul__(self, value):
+        """FOR SCALARS ONLY"""
         result = Variable([],[],[],[])
         result.X = self.X * value
         result.N = self.N

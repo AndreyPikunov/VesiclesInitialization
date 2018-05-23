@@ -25,16 +25,16 @@ def draw_initial_shape(sh_x, sh_y):
     plt.plot(sh_x,sh_y, '.')
 
 
-def vessel_area(A):
-    return np.sum(A)
+def vessel_area(mask):
+    return np.sum(mask)
 
-def hematocrit(A, sx, sy):
+def hematocrit(mask, sx, sy):
     
     total_rbc_area = 0
     for i in range(len(sx)):
         total_rbc_area = total_rbc_area + functions.geometry.area(sx[i,:], sy[i,:])
     
-    return abs(round( total_rbc_area/vessel_area(A) , 2) * 100)
+    return abs(round( total_rbc_area/vessel_area(mask) , 2) * 100)
 
 
 def get_rbc_size(sh_x, sh_y):

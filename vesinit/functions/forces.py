@@ -99,7 +99,6 @@ def fr(var, i, segm, lr = 1.0, kr = 1.0):
        geometry.vector_length( vctr[0], vctr[1] ) < lr:
         lx, ly = vctr
     
-    """
     if segm.is_point_on_segment(var.x(i), var.y(i))==False:
         
         vctr1 = segm.vector_from_point1(var.x(i), var.y(i)) 
@@ -112,12 +111,13 @@ def fr(var, i, segm, lr = 1.0, kr = 1.0):
 
         if geometry.vector_length( vctr[0], vctr[1] ) < lr:
             lx, ly = vctr    
-    """
-    if (lx, ly) != (None, None):        
-        norm = math.sqrt(lx**2 + ly**2)
-        
-        frx = kr * np.sign(lx) * (lr/norm)
-        fry = kr * np.sign(ly) * (lr/norm)
+  
+    if (lx, ly) != (None, None):            #     ^ \        
+                                            #     | \
+        norm = math.sqrt(lx**2 + ly**2)     #     |  \
+                                            #     |   `-|        
+        frx = kr * np.sign(lx) * (lr/norm)  #     |_____l__________  >
+        fry = kr * np.sign(ly) * (lr/norm)  #     |
         
         return frx, fry
     
