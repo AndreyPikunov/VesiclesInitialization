@@ -28,7 +28,7 @@ def draw_initial_shape(sh_x, sh_y):
 def vessel_area(mask):
     return np.sum(mask)
 
-def hematocrit(mask, sx, sy):
+def hematocrit_from_shapes(mask, sx, sy):
     
     total_rbc_area = 0
     for i in range(len(sx)):
@@ -36,14 +36,18 @@ def hematocrit(mask, sx, sy):
     
     return abs(round( total_rbc_area/vessel_area(mask) , 2) * 100)
 
+def hematocrit_from_number(mask, sh_x, sh_y, number_of_vesicles):
+    
+    total_rbc_area = functions.geometry.area(sh_x, sh_y) * number_of_vesicles
+    return abs(round( total_rbc_area/vessel_area(mask) , 2) * 100)
 
 def get_rbc_size(sh_x, sh_y):
     
     w = np.ptp(sh_x)
     h = np.ptp(sh_y)
     
-    w = math.ceil(w) + 1 # maybe + 1 safety?
-    h = math.ceil(h) + 1
+    w = math.ceil(w) + 2 # maybe + 1 safety?
+    h = math.ceil(h) + 2
     
     return (w,h)
 
@@ -68,8 +72,8 @@ def insert_vesicles(sh_x, sh_y, mask = np.full((100,100), True), VERT = True):
         (w,h) = (h,w)
         inclination = 3.1416/2.0
         
-    for i in range(w//2, b.shape[0] - w//2): #x
-        for j in range(h//2, b.shape[1] - h//2):
+    for i in range(w//2, b.shape[0] - w//2): # x-coord
+        for j in range(h//2, b.shape[1] - h//2): # y-coord
             if b[i - w//2 : i + w//2 , j - h//2 : j + h//2].all():
                 l.append([i, j , inclination])
                 b[i - w//2 : i + w//2 , j - h//2: j + h//2].fill(False)
@@ -87,13 +91,12 @@ def insert_vesicles_max(sh_x, sh_y, mask = np.full((100,100), True)):
 
 def draw_scene(mask, sx, sy):
     
-    fig = plt.figure()#(figsize=(18,12))
+    fig = plt.figure(figsize=(18,12))
     draw_mask(mask)
     plt.plot(sx.transpose(),sy.transpose())
     plt.show()
     
     print('Number of vesicles = ', len(sx))
-    print('Hematocrit = ', hematocrit(mask, sx, sy))
 
 
 def create_shapes(l, sh_x, sh_y):
@@ -116,7 +119,7 @@ def create_shapes(l, sh_x, sh_y):
 
 def save_coordinates(file_name, l):
     
-    f = open(file_name+'.txt', 'w')
+    f = open(file_name, 'w')
 
     for i in range(len(l)):
         f.write(str(l[i][0])+".0 "+str(l[i][1])+" "+str(l[i][2])+"\n")

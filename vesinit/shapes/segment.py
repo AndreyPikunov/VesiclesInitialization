@@ -7,6 +7,8 @@ class Segment:
         self.point1 = point1
         self.point2 = point2
         
+        assert point1 != point2, 'Different points should be given!'
+        
         if (self.point1[0]==self.point2[0]) and (self.point1[1]!=self.point2[1]): #vertical
             self.a = 1.0
             self.b = 0.0
@@ -27,11 +29,20 @@ class Segment:
         self.b = self.b / norma
         self.c = self.c / norma
             
+         
+    def __str__(self):
+        return "(({0[0]}, {0[1]}), ({1[0]}, {1[1]}))".format(self.point1, self.point2) 
         
     def is_contain(self, x, y):
         """USE ONLY FOR POINTS ON (INSIDE) THE LINE ax+by+c=0 !!!
         o------x--------------o"""
         return (self.point1[0] - x) * (self.point2[0] - x) + (self.point1[1] - y) * (self.point2[1] - y) <= 0
+    
+    def perpendicular_distance(self, x, y):
+        return functions.geometry.perpendicular_distance(self.a, self.b, self.c, x, y)
+    
+    def perpendicular_distance_unnormalized(self, x, y):
+        return functions.geometry.perpendicular_distance_unnormalized(self.a, self.b, self.c, x, y)
     
     def vector_from_segment_to_point(self, x, y):     
         return functions.geometry.vector_from_line_to_point(self.a, self.b, self.c, x, y)

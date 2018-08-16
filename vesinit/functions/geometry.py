@@ -32,6 +32,11 @@ def perpendicular_distance(a, b, c, x0, y0):
     nominator = a*x0 + b*y0 + c # CAN BE NEGATIVE, IMPORTANT!
     denominator = math.sqrt(a**2 + b**2)
     return nominator/denominator
+
+
+def perpendicular_distance_unnormalized(a, b ,c ,x0, y0):
+    """unnormilized distance from point (x0, y0) to a line (ax + by + c = 0)"""
+    return a*x0 + b*y0 + c
     
     
 def point_on_line(a, b, c, x0, y0):
