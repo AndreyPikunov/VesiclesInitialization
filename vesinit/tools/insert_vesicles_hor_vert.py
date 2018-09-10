@@ -23,6 +23,7 @@ def draw_initial_shape(sh_x, sh_y):
     ax = plt.axes()
     plt.axis('equal');
     plt.plot(sh_x,sh_y, '.')
+    return
 
 
 def vessel_area(mask):
@@ -31,8 +32,8 @@ def vessel_area(mask):
 def hematocrit_from_shapes(mask, sx, sy):
     
     total_rbc_area = 0
-    for i in range(len(sx)):
-        total_rbc_area = total_rbc_area + functions.geometry.area(sx[i,:], sy[i,:])
+    for i in range(sx.shape[1]): # shape = (nodes, ves)
+        total_rbc_area = total_rbc_area + functions.geometry.area(sx[:,i], sy[:,i])
     
     return abs(round( total_rbc_area/vessel_area(mask) , 2) * 100)
 
@@ -49,7 +50,7 @@ def get_rbc_size(sh_x, sh_y):
     w = math.ceil(w) + 2 # maybe + 1 safety?
     h = math.ceil(h) + 2
     
-    return (w,h)
+    return (int(w), int(h))
 
 
 def load_mask(file_name):
@@ -57,6 +58,7 @@ def load_mask(file_name):
 
 def draw_mask(mask):
     plt.imshow(mask.transpose(), cmap='gray')
+    return
 
 
 def insert_vesicles(sh_x, sh_y, mask = np.full((100,100), True), VERT = True):
@@ -93,10 +95,10 @@ def draw_scene(mask, sx, sy):
     
     fig = plt.figure(figsize=(18,12))
     draw_mask(mask)
-    plt.plot(sx.transpose(),sy.transpose())
-    plt.show()
+    plt.plot(sx, sy)
     
-    print('Number of vesicles = ', len(sx))
+    print('Number of vesicles = {}'.format(len(sx)))
+    return
 
 
 def create_shapes(l, sh_x, sh_y):
@@ -125,3 +127,4 @@ def save_coordinates(file_name, l):
         f.write(str(l[i][0])+".0 "+str(l[i][1])+" "+str(l[i][2])+"\n")
 
     f.close()
+    return
